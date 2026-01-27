@@ -5,7 +5,7 @@
 The central management service for **The Beyond**. A monorepo containing the Telegram Bot, Open API, and backend logic for user authentication, billing, and traffic accounting.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-99FF00.svg?style=for-the-badge&labelColor=020617)](https://github.com/thebeyond-net/control-plane/blob/main/LICENSE)
-[![Docker](https://img.shields.io/badge/Docker-%231D63ED.svg?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com)
+[![Docker](https://img.shields.io/badge/Docker-%231D63ED.svg?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![Go](https://img.shields.io/badge/Go-%2300ADD8.svg?style=for-the-badge&logo=go&logoColor=white)](https://go.dev)
 [![Postgresql](https://img.shields.io/badge/PostgreSQL-%23326791.svg?style=for-the-badge&logo=postgresql&logoColor=white)](https://postgresql.org)
 [![gRPC](https://img.shields.io/badge/gRPC-%232DA6B0.svg?style=for-the-badge)](https://grpc.io)
