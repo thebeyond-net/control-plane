@@ -1,13 +1,21 @@
 package domain
 
+import (
+	"context"
+	"time"
+)
+
 type User struct {
-	// TODO: add fields
+	ID string
+	Subscription
+	CreatedAt time.Time
 }
 
 type UserRepository interface {
-	// TODO: add methods
+	GetByIdentity(ctx context.Context, provider, providerID string) (User, error)
+	CreateWithIdentity(ctx context.Context, user User, identity Identity) error
 }
 
-type UserService interface {
-	// TODO: add methods
+type AuthService interface {
+	Login(ctx context.Context, provider, providerID string) (User, error)
 }

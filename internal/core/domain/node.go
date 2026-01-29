@@ -1,13 +1,18 @@
 package domain
 
+import "context"
+
 type Node struct {
-	// TODO: add fields
+	ID          string
+	Address     string
+	LoadPercent int
 }
 
 type NodeRepository interface {
-	// TODO: add methods
+	GetActive(ctx context.Context) ([]Node, error)
+	UpdateLoad(ctx context.Context, id string, load int) error
 }
 
 type NodeService interface {
-	// TODO: add methods
+	GetOptimizedNode(ctx context.Context) (Node, error)
 }
