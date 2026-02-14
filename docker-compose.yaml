@@ -1,0 +1,36 @@
+services:
+  postgres:
+    image: postgres:18.0-alpine3.22
+    container_name: thebeyond-postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      - ./scripts/postgres/init-db.d:/docker-entrypoint-initdb.d
+      - ./secrets:/run/secrets:ro
+    environment:
+      POSTGRES_DB: app_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_root_password
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrator:
+    image: migrate/migrate:v4.19.1
+    container_name: thebeyond-migrator
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        export PASS=$$(cat /run/secrets/postgres_root_password)
+        migrate -path /migrations -database "postgres://postgres:$$PASS@postgres:5432/app_db?sslmode=disable" up
+    volumes:
+      - ./migrations:/migrations:ro
+      - ./secrets:/run/secrets:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pg_data:
