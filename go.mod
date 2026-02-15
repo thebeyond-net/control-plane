@@ -4,6 +4,7 @@ go 1.25.6
 
 require (
 	github.com/BurntSushi/toml v1.6.0 // indirect
+	github.com/go-telegram/bot v1.18.0 // indirect
 	github.com/ilyakaznacheev/cleanenv v1.5.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
