@@ -1,21 +1,15 @@
 package domain
 
 import (
-	"context"
 	"time"
 )
 
 type User struct {
 	ID string
+	Identity
 	Subscription
-	CreatedAt time.Time
-}
-
-type UserRepository interface {
-	GetByIdentity(ctx context.Context, provider, providerID string) (User, error)
-	CreateWithIdentity(ctx context.Context, user User, identity Identity) error
-}
-
-type AuthService interface {
-	Login(ctx context.Context, provider, providerID string) (User, error)
+	Devices      int
+	LanguageCode string
+	CurrencyCode string
+	CreatedAt    time.Time
 }
