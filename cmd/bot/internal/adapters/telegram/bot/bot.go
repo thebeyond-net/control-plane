@@ -2,9 +2,9 @@ package bot
 
 import (
 	"github.com/go-telegram/bot"
-	"github.com/thebeyond-net/control-plane/cmd/bot/config"
 	"github.com/thebeyond-net/control-plane/cmd/bot/internal/adapters/telegram/webhook"
 	"github.com/thebeyond-net/control-plane/cmd/bot/internal/core/ports"
+	"github.com/thebeyond-net/control-plane/config"
 	"go.uber.org/zap"
 )
 
