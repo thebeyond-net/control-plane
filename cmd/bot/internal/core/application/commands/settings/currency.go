@@ -16,17 +16,15 @@ import (
 type CurrencyUseCase struct {
 	bot                 ports.Bot
 	userSettingsUseCase sharedPorts.UserSettingsUseCase
-	currencies          map[string]domain.Currency
-	layout              [][]string
+	currencies          domain.Items
 }
 
 func NewCurrencyUseCase(
 	bot ports.Bot,
 	userSettingsUseCase sharedPorts.UserSettingsUseCase,
-	currencies map[string]domain.Currency,
-	layout [][]string,
+	currencies domain.Items,
 ) ports.CommandHandler {
-	return &CurrencyUseCase{bot, userSettingsUseCase, currencies, layout}
+	return &CurrencyUseCase{bot, userSettingsUseCase, currencies}
 }
 
 func (uc *CurrencyUseCase) Execute(ctx context.Context, msg input.Message, user domain.User) error {
@@ -38,7 +36,7 @@ func (uc *CurrencyUseCase) Execute(ctx context.Context, msg input.Message, user 
 
 func (uc *CurrencyUseCase) applyChoice(ctx context.Context, msg input.Message, user domain.User) error {
 	currencyCode := msg.Args[0]
-	currency, ok := uc.currencies[currencyCode]
+	currency, ok := uc.currencies.Get(currencyCode)
 	if !ok {
 		return errors.New("currency not found")
 	}
@@ -48,20 +46,21 @@ func (uc *CurrencyUseCase) applyChoice(ctx context.Context, msg input.Message, u
 	}
 
 	text := i18n.Get(user.LanguageCode, "CurrencySelected", map[string]any{
-		"Name": currency.GetName(),
+		"Name": currency.Name,
 	}, nil)
 
 	return uc.bot.ShowNotification(ctx, msg.InteractionID, text, false)
 }
 
 func (uc *CurrencyUseCase) presentOptions(ctx context.Context, msg input.Message, user domain.User) error {
+	rowWidth := 3
 	backBtn := i18n.Get(user.LanguageCode, "BackButton", nil, nil)
 
 	text := i18n.Get(user.LanguageCode, "SelectCurrency", nil, nil)
 	markup := helpers.BuildSelectionMarkup(
-		uc.layout,
 		uc.currencies,
 		"currency",
+		rowWidth,
 	)
 
 	markup.Next().AddButton(interaction.NewButton().
