@@ -16,17 +16,15 @@ import (
 type LanguageUseCase struct {
 	bot          ports.Bot
 	userSettings sharedPorts.UserSettingsUseCase
-	languages    map[string]domain.Language
-	layout       [][]string
+	languages    domain.Items
 }
 
 func NewLanguageUseCase(
 	bot ports.Bot,
 	userSettings sharedPorts.UserSettingsUseCase,
-	languages map[string]domain.Language,
-	layout [][]string,
+	languages domain.Items,
 ) ports.CommandHandler {
-	return &LanguageUseCase{bot, userSettings, languages, layout}
+	return &LanguageUseCase{bot, userSettings, languages}
 }
 
 func (uc *LanguageUseCase) Execute(ctx context.Context, msg input.Message, user domain.User) error {
@@ -38,7 +36,7 @@ func (uc *LanguageUseCase) Execute(ctx context.Context, msg input.Message, user 
 
 func (uc *LanguageUseCase) applyChoice(ctx context.Context, msg input.Message, user domain.User) error {
 	languageCode := msg.Args[0]
-	language, ok := uc.languages[languageCode]
+	language, ok := uc.languages.Get(languageCode)
 	if !ok {
 		return errors.New("language not found")
 	}
@@ -56,13 +54,14 @@ func (uc *LanguageUseCase) applyChoice(ctx context.Context, msg input.Message, u
 }
 
 func (uc *LanguageUseCase) presentOptions(ctx context.Context, msg input.Message, user domain.User) error {
+	rowWidth := 3
 	settingsBtn := i18n.Get(user.LanguageCode, "BackButton", nil, nil)
 
 	text := i18n.Get(user.LanguageCode, "SelectLanguage", nil, nil)
 	markup := helpers.BuildSelectionMarkup(
-		uc.layout,
 		uc.languages,
 		"language",
+		rowWidth,
 	)
 
 	markup.Next().AddButton(interaction.NewButton().
