@@ -45,6 +45,7 @@ func (uc *Creator) Execute(ctx context.Context, msg input.Message, user domain.U
 
 func (uc *Creator) selectDeviceType(ctx context.Context, msg input.Message, user domain.User) error {
 	const rowWidth = 2
+
 	text := i18n.Get(user.LanguageCode, "SelectDevice", nil, nil)
 	backBtn := i18n.Get(user.LanguageCode, "BackButton", nil, nil)
 
@@ -66,24 +67,23 @@ func (uc *Creator) selectLocation(ctx context.Context, msg input.Message, user d
 	}
 
 	markup := interaction.NewReplyMarkup()
-	deviceType := msg.Args[0]
+	os := msg.Args[0]
 
 	for i, node := range nodes {
 		if i%2 == 0 {
 			markup.Next()
 		}
 
-		locationCode := node.ID[:2]
-		location, ok := uc.locations.Get(locationCode)
+		location, ok := uc.locations.Get(node.ID[:2])
 		if !ok {
 			continue
 		}
 
-		locationName := i18n.Get(user.LanguageCode, location.Name, nil, nil)
-		payload := fmt.Sprintf("newdevice %s %s", deviceType, node.ID)
+		btnText := i18n.Get(user.LanguageCode, location.Name, nil, nil)
+		payload := fmt.Sprintf("newdevice %s %s", os, node.ID)
 
 		markup.AddButton(interaction.NewButton().
-			Text(locationName).
+			Text(btnText).
 			CallbackData(payload).
 			IconCustomEmojiID(location.Icon).
 			Build())
