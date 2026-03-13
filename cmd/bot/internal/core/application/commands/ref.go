@@ -40,7 +40,13 @@ func (uc *RefUseCase) Execute(ctx context.Context, msg input.Message, user domai
 		"UserID":      user.ID,
 	}, nil)
 
-	text := i18n.Get(user.LanguageCode, "Ref", nil, nil)
+	formattedBalance := fmt.Sprintf("%.2f", float64(user.Referral.Balance)/100.0)
+
+	text := i18n.Get(user.LanguageCode, "Ref", map[string]any{
+		"Balance":        formattedBalance,
+		"Commission":     user.Referral.CommissionRate,
+		"ReferralsCount": user.Referral.Count,
+	}, nil)
 	markup := interaction.NewReplyMarkup()
 
 	markup.Next().AddButton(interaction.NewButton().
