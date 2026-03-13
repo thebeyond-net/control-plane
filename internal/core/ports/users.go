@@ -3,6 +3,7 @@ package ports
 import (
 	"context"
 
+	"github.com/thebeyond-net/control-plane/internal/core/application/input"
 	"github.com/thebeyond-net/control-plane/internal/core/domain"
 )
 
@@ -14,7 +15,7 @@ type UserRepository interface {
 }
 
 type AuthUseCase interface {
-	Login(ctx context.Context, provider, providerID string) (domain.User, error)
+	Login(ctx context.Context, provider, providerID string, input input.Login) (domain.User, error)
 }
 
 type UserSettingsUseCase interface {
