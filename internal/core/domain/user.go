@@ -6,9 +6,10 @@ import (
 )
 
 type User struct {
-	ID string
-	Identity
-	Subscription
+	ID           string
+	Identity     Identity
+	Subscription Subscription
+	Referral     Referral
 	Devices      int
 	Bandwidth    int
 	LanguageCode string
