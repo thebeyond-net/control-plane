@@ -11,6 +11,8 @@ const (
 	StepPeriods
 	StepMethods
 	StepPayment
+	StepCalendar
+	StepYearSelection
 )
 
 type requestState struct {
@@ -44,6 +46,16 @@ func (uc *UseCase) parseArgs(args []string) requestState {
 		if err == nil {
 			state.Bandwidth = s
 		}
+	}
+
+	if len(args) >= 3 && args[2] == "years" {
+		state.Step = StepYearSelection
+		return state
+	}
+
+	if len(args) >= 3 && args[2] == "cal" {
+		state.Step = StepCalendar
+		return state
 	}
 
 	switch len(args) {

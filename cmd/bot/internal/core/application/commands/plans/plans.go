@@ -2,6 +2,8 @@ package plans
 
 import (
 	"context"
+	"strconv"
+	"time"
 
 	"github.com/thebeyond-net/control-plane/cmd/bot/internal/core/application/input"
 	"github.com/thebeyond-net/control-plane/cmd/bot/internal/core/ports"
@@ -63,6 +65,16 @@ func (uc *UseCase) Execute(ctx context.Context, msg input.Message, user domain.U
 		return uc.renderPlanDetails(ctx, msg, user, plan, state.Bandwidth)
 	case StepPeriods:
 		return uc.renderPeriodSelection(ctx, msg, user, plan, state.Bandwidth)
+	case StepCalendar:
+		year, _ := strconv.Atoi(msg.Args[3])
+		month, _ := strconv.Atoi(msg.Args[4])
+		return uc.renderCalendar(ctx, msg, user, plan, state.Bandwidth, year, time.Month(month))
+	case StepYearSelection:
+		month, _ := strconv.Atoi(msg.Args[3])
+		if month == 0 {
+			month = int(time.Now().Month())
+		}
+		return uc.renderYearSelection(ctx, msg, user, plan, state.Bandwidth, time.Month(month))
 	case StepMethods:
 		return uc.renderPaymentMethods(ctx, msg, user, plan, state)
 	case StepPayment:
