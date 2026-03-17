@@ -33,6 +33,10 @@ type Config struct {
 	Locations      map[string]ItemDTO `yaml:"locations"`
 	Languages      map[string]ItemDTO `yaml:"languages"`
 	Currencies     map[string]ItemDTO `yaml:"currencies"`
+
+	UnleashURL         string `env:"UNLEASH_URL"`
+	UnleashToken       string `env:"UNLEASH_TOKEN"`
+	UnleashEnvironment string `env:"UNLEASH_ENVIRONMENT"`
 }
 
 type NewbieDTO struct {
