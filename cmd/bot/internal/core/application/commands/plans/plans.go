@@ -18,6 +18,7 @@ type UseCase struct {
 	currencies       domain.Items
 	yookassa         sharedPorts.Invoice
 	telegramStars    sharedPorts.Invoice
+	featureFlags     sharedPorts.FeatureFlags
 	defaultBandwidth int
 }
 
@@ -30,6 +31,7 @@ func NewUseCase(
 	currencies domain.Items,
 	yookassa sharedPorts.Invoice,
 	telegramStars sharedPorts.Invoice,
+	featureFlags sharedPorts.FeatureFlags,
 	defaultBandwidth int,
 ) ports.CommandHandler {
 	return &UseCase{
@@ -41,6 +43,7 @@ func NewUseCase(
 		currencies,
 		yookassa,
 		telegramStars,
+		featureFlags,
 		defaultBandwidth,
 	}
 }
