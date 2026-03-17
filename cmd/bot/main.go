@@ -15,6 +15,7 @@ import (
 	"github.com/thebeyond-net/control-plane/cmd/bot/internal/adapters/telegram/router"
 	"github.com/thebeyond-net/control-plane/cmd/bot/internal/adapters/telegram/webhook"
 	"github.com/thebeyond-net/control-plane/config"
+	"github.com/thebeyond-net/control-plane/internal/adapters/features"
 	"github.com/thebeyond-net/control-plane/internal/adapters/nodepool"
 	"github.com/thebeyond-net/control-plane/internal/adapters/repositories/postgres/devices"
 	"github.com/thebeyond-net/control-plane/internal/adapters/repositories/postgres/nodes"
@@ -32,6 +33,7 @@ import (
 	userSettingsApplication "github.com/thebeyond-net/control-plane/internal/core/application/user_settings"
 	"github.com/thebeyond-net/control-plane/internal/i18n"
 	"github.com/thebeyond-net/control-plane/pkg/postgres"
+	"github.com/thebeyond-net/control-plane/pkg/unleash"
 	"go.uber.org/zap"
 )
 
@@ -68,6 +70,19 @@ func main() {
 	appLogger, err := logger.Init(cfg.LogLevel)
 	if err != nil {
 		log.Fatalf("Failed to initialize logger: %v\n", err)
+	}
+
+	if cfg.UnleashURL != "" {
+		err := unleash.Init(
+			"thebeyond-bot",
+			cfg.UnleashEnvironment,
+			cfg.UnleashURL,
+			cfg.UnleashToken,
+		)
+		if err != nil {
+			appLogger.Error("Failed to initialize Unleash", zap.Error(err))
+		}
+		defer unleash.Close()
 	}
 
 	defer appLogger.Sync()
@@ -139,17 +154,19 @@ func main() {
 
 	telegramBot := telegramBot.New(botContainer.Instance, appLogger)
 	telegramStars := telegramStars.New(botContainer.Instance)
-	router := router.NewRouter(authUseCase, appLogger)
+	featureFlags := features.NewUnleashAdapter()
 
+	router := router.NewRouter(authUseCase, appLogger)
 	router.RegisterAllHandlers(
 		botContainer.Instance,
+		cfg,
 		telegramBot,
 		userSettingsUseCase,
 		deviceUseCase,
 		nodeUseCase,
 		yookassa,
 		telegramStars,
-		cfg,
+		featureFlags,
 		newsURL,
 		reviewsURL,
 		supportURL,
